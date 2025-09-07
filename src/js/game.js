@@ -21,13 +21,11 @@ class TypeGameApp {
             });
         });
 
-        // 返回菜单按钮事件
-        document.querySelectorAll('#back-to-menu, #pinyin-back-menu').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.showScreen('menu-screen');
-                this.currentMode = null;
-            });
-        });
+        // 顶部返回主菜单按钮
+        const backTop = document.getElementById('back-to-menu-top');
+        if (backTop) {
+            backTop.addEventListener('click', () => this.goToMenu());
+        }
 
         // 暂停按钮事件
         const pauseBtn = document.getElementById('pause-game');
@@ -72,6 +70,17 @@ class TypeGameApp {
                 alert('🚧 日常训练模式正在开发中...');
                 break;
         }
+    }
+
+    goToMenu() {
+        // 停止当前游戏并返回主菜单
+        if (this.currentMode === 'keyboard' && window.keyboardGame) {
+            if (window.keyboardGame.stop) window.keyboardGame.stop();
+        } else if (this.currentMode === 'pinyin' && window.pinyinGame) {
+            if (window.pinyinGame.pause) window.pinyinGame.pause();
+        }
+        this.currentMode = null;
+        this.showScreen('menu-screen');
     }
 
     showScreen(screenId) {
@@ -144,8 +153,8 @@ class TypeGameApp {
     }
 
     playSound(type) {
-        // 音效播放 - 后续实现
-        console.log(`Playing sound: ${type}`);
+        if (!this._audio) this._audio = new SimpleAudio();
+        this._audio.play(type);
     }
 
     showEncouragement() {
@@ -186,6 +195,73 @@ class TypeGameApp {
         setTimeout(() => {
             document.body.removeChild(messageDiv);
         }, 2000);
+    }
+}
+
+// 简易音频引擎（Web Audio API）
+class SimpleAudio {
+    constructor() {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = AudioCtx ? new AudioCtx() : null;
+        this.volume = 0.2;
+    }
+    ensure() {
+        if (!this.ctx) return false;
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+        return true;
+    }
+    tone(freq = 440, duration = 0.12, type = 'sine') {
+        if (!this.ensure()) return;
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = type;
+        o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        g.gain.setValueAtTime(this.volume, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+        o.connect(g).connect(this.ctx.destination);
+        o.start();
+        o.stop(this.ctx.currentTime + duration);
+    }
+    seq(notes) {
+        if (!this.ensure()) return;
+        let t = this.ctx.currentTime;
+        notes.forEach(n => {
+            const o = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            o.type = n.type || 'sine';
+            o.frequency.setValueAtTime(n.f, t);
+            g.gain.setValueAtTime(this.volume * (n.v || 1), t);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + n.d);
+            o.connect(g).connect(this.ctx.destination);
+            o.start(t);
+            o.stop(t + n.d);
+            t += (n.gap || n.d * 0.2);
+        });
+    }
+    play(type) {
+        switch (type) {
+            case 'correct':
+                this.seq([
+                    { f: 880, d: 0.10, type: 'sine' },
+                    { f: 1175, d: 0.12, type: 'sine' },
+                ]);
+                break;
+            case 'wrong':
+                this.seq([
+                    { f: 220, d: 0.15, type: 'square' },
+                    { f: 180, d: 0.15, type: 'square' },
+                ]);
+                break;
+            case 'success':
+                this.seq([
+                    { f: 659, d: 0.10 }, { f: 784, d: 0.10 }, { f: 987, d: 0.14 }
+                ]);
+                break;
+            default:
+                this.tone(520, 0.08, 'triangle');
+        }
     }
 }
 

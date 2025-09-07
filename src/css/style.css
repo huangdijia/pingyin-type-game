@@ -552,6 +552,7 @@ body {
 #pause-game { display: none; }
 #app.in-game .scoreboard { display: flex; }
 #app.in-game #pause-game { display: inline-block; }
+#app.in-game #back-to-menu-top { display: inline-block; }
 
 /* 装饰背景（云朵、气泡） */
 .bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
