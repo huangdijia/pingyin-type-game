@@ -85,6 +85,18 @@ class TypeGameApp {
         if (targetScreen) {
             targetScreen.classList.add('active');
         }
+
+        // 切换是否在游戏中（用于显示/隐藏计分、暂停等）
+        const appEl = document.getElementById('app');
+        if (appEl) {
+            const inGame = screenId === 'keyboard-game' || screenId === 'pinyin-game';
+            appEl.classList.toggle('in-game', inGame);
+        }
+
+        // 离开游戏时，确保暂停遮罩隐藏
+        if (this.$overlay && (screenId !== 'keyboard-game' && screenId !== 'pinyin-game')) {
+            this.$overlay.classList.remove('active');
+        }
     }
 
     updateScore(points) {

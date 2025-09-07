@@ -544,6 +544,12 @@ body {
     100% { transform: scale(1); }
 }
 
+/* 首页隐藏计分与暂停，进入游戏后显示 */
+.scoreboard { display: none; }
+#pause-game { display: none; }
+#app.in-game .scoreboard { display: flex; }
+#app.in-game #pause-game { display: inline-block; }
+
 /* 装饰背景（云朵、气泡） */
 .bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .cloud { position: absolute; width: 180px; height: 70px; background: #fff; opacity: 0.45; border-radius: 50px; filter: blur(1px); }
