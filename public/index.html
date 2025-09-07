@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拼音打字王 - MVP</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        .game-title { font-size: 2.2rem; color: #ff6b6b; margin-bottom: 20px; }
+        .pause-btn { background:#ffd166; border:none; padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:700; }
+        .scoreboard { display:flex; gap:20px; align-items:center; }
+    </style>
+    </head>
+<body>
+    <div id="app">
+        <div class="game-header">
+            <h1>🎮 拼音打字王</h1>
+            <div class="scoreboard">
+                <div class="stat"><span class="label">得分</span><span id="score" class="value">0</span></div>
+                <div class="stat"><span class="label">准确率</span><span id="accuracy" class="value">100%</span></div>
+                <button id="pause-game" class="pause-btn">暂停</button>
+            </div>
+        </div>
+
+        <main class="game-main">
+            <!-- 菜单屏幕 -->
+            <section id="menu-screen" class="screen active">
+                <div class="menu-container">
+                    <h2 class="game-title">请选择模式</h2>
+                    <div class="menu-buttons">
+                        <button class="menu-btn" data-mode="keyboard">⌨️ 键盘熟悉关</button>
+                        <button class="menu-btn" data-mode="pinyin">📝 拼音打字关</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 键盘熟悉关 -->
+            <section id="keyboard-game" class="screen">
+                <div class="game-area">
+                    <div id="falling-letters" class="falling-letters-container"></div>
+                    <div class="game-keyboard">
+                        <div class="keyboard-row">
+                            <div class="key" data-key="q">Q</div>
+                            <div class="key" data-key="w">W</div>
+                            <div class="key" data-key="e">E</div>
+                            <div class="key" data-key="r">R</div>
+                            <div class="key" data-key="t">T</div>
+                            <div class="key" data-key="y">Y</div>
+                            <div class="key" data-key="u">U</div>
+                            <div class="key" data-key="i">I</div>
+                            <div class="key" data-key="o">O</div>
+                            <div class="key" data-key="p">P</div>
+                        </div>
+                        <div class="keyboard-row">
+                            <div class="key" data-key="a">A</div>
+                            <div class="key home-key" data-key="s">S</div>
+                            <div class="key home-key" data-key="d">D</div>
+                            <div class="key home-key" data-key="f">F</div>
+                            <div class="key" data-key="g">G</div>
+                            <div class="key" data-key="h">H</div>
+                            <div class="key home-key" data-key="j">J</div>
+                            <div class="key home-key" data-key="k">K</div>
+                            <div class="key home-key" data-key="l">L</div>
+                        </div>
+                        <div class="keyboard-row">
+                            <div class="key" data-key="z">Z</div>
+                            <div class="key" data-key="x">X</div>
+                            <div class="key" data-key="c">C</div>
+                            <div class="key" data-key="v">V</div>
+                            <div class="key" data-key="b">B</div>
+                            <div class="key" data-key="n">N</div>
+                            <div class="key" data-key="m">M</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center; margin-top:16px;">
+                        <button id="back-to-menu" class="control-btn">返回主菜单</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 拼音打字关 -->
+            <section id="pinyin-game" class="screen">
+                <div class="pinyin-area">
+                    <div class="character-display">
+                        <div id="target-character" class="target-character">字</div>
+                        <div class="character-image" id="character-hint"></div>
+                    </div>
+                    <div class="input-area">
+                        <input id="pinyin-input" type="text" placeholder="输入拼音（不含声调）" autocomplete="off" />
+                        <button id="pinyin-submit" class="control-btn">确认</button>
+                    </div>
+                    <div id="pinyin-candidates" class="pinyin-candidates"></div>
+                    <div style="text-align:center; margin-top:16px;">
+                        <button id="pinyin-back-menu" class="control-btn">返回主菜单</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="game-footer">
+            <p>快乐学习，天天进步！</p>
+        </footer>
+    </div>
+
+    <script src="js/keyboard-game.js"></script>
+    <script src="js/pinyin-game.js"></script>
+    <script src="js/game.js"></script>
+    <script>
+      // 提供旧HTML内联处理的极简兼容封装（如需）
+      window.game = {
+        pauseGame: () => window.gameApp && window.gameApp.pauseGame(),
+      };
+    </script>
+</body>
+</html>
