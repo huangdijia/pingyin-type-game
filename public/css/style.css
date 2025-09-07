@@ -537,6 +537,9 @@ body {
 
 .game-footer { border-radius: 20px; border: 3px solid #ffdce5; }
 .game-footer p { color: var(--c-primary); font-weight: 800; }
+/* 首页不显示底部栏，进入游戏再展示 */
+.game-footer { display: none; }
+#app.in-game .game-footer { display: block; }
 
 @keyframes pop {
     0% { transform: scale(0.9); opacity: 0.8; }

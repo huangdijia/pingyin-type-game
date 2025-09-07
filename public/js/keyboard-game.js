@@ -22,6 +22,7 @@ class KeyboardGame {
         this.container = document.getElementById('falling-letters');
         this.startOverlay = document.getElementById('keyboard-start-overlay');
         this.startBtn = document.getElementById('keyboard-start-btn');
+        this.startBackBtn = document.getElementById('keyboard-start-back');
         
         this.initKeyboard();
         this.initStartUI();
@@ -58,6 +59,14 @@ class KeyboardGame {
     initStartUI() {
         if (this.startBtn) {
             this.startBtn.addEventListener('click', () => this.start());
+        }
+        if (this.startBackBtn) {
+            this.startBackBtn.addEventListener('click', () => {
+                if (window.gameApp) {
+                    window.gameApp.showScreen('menu-screen');
+                }
+                this.resetToIdle();
+            });
         }
     }
 
