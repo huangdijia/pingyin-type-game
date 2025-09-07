@@ -2,17 +2,48 @@
   "name": "pinyin-type-game",
   "version": "1.0.0",
   "description": "拼音打字王 - 适合小学三年级孩子的打字游戏",
-  "main": "src/index.js",
+  "main": "electron/main.js",
   "scripts": {
     "start": "http-server public -p 8080 -c-1",
     "dev": "http-server public -p 8080 -c-1 -o",
     "build": "npm run copy-assets",
-    "copy-assets": "cp -r src/* public/"
+    "copy-assets": "cp -r src/* public/",
+    "electron:dev": "npm run build && electron .",
+    "dist": "npm run build && electron-builder -m",
+    "dist:mac": "npm run build && electron-builder --mac dmg",
+    "dist:mac:x64": "npm run build && electron-builder --mac dmg --x64",
+    "dist:mac:arm64": "npm run build && electron-builder --mac dmg --arm64"
   },
   "keywords": ["pinyin", "typing", "game", "education", "chinese"],
   "author": "Type Game Team",
   "license": "MIT",
   "devDependencies": {
+    "electron": "^30.0.6",
+    "electron-builder": "^24.13.3",
     "http-server": "^14.1.1"
+  },
+  "build": {
+    "appId": "com.hdj.pinyintypegame",
+    "productName": "拼音打字王",
+    "files": [
+      "public/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.education",
+      "identity": null,
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "backgroundColor": "#FFFFFF"
+    },
+    "directories": {
+      "buildResources": "build"
+    }
   }
 }
