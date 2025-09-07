@@ -171,30 +171,69 @@ class TypeGameApp {
     }
 
     showMessage(text, type = 'info') {
+        const isKeyboard = this.currentMode === 'keyboard';
         const messageDiv = document.createElement('div');
         messageDiv.className = `game-message ${type}`;
         messageDiv.textContent = text;
-        messageDiv.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: ${type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1'};
-            color: ${type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460'};
-            padding: 20px 30px;
-            border-radius: 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            animation: bounce 0.6s ease;
-        `;
 
-        document.body.appendChild(messageDiv);
+        const bg = type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1';
+        const fg = type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460';
+
+        if (isKeyboard) {
+            // 键盘关：使用右上角 toast，不遮挡视线
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = `
+                    position: fixed;
+                    top: 88px; /* 头部下方 */
+                    right: 16px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    z-index: 1000;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(container);
+            }
+            messageDiv.style.cssText = `
+                background: ${bg};
+                color: ${fg};
+                padding: 10px 14px;
+                border-radius: 12px;
+                font-size: 1rem;
+                font-weight: 700;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+                border-left: 6px solid ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+                animation: fadeIn 0.2s ease;
+                max-width: 320px;
+                pointer-events: none;
+            `;
+            container.appendChild(messageDiv);
+        } else {
+            // 其他屏幕：保持原中心提示
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: ${bg};
+                color: ${fg};
+                padding: 20px 30px;
+                border-radius: 15px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: bounce 0.6s ease;
+            `;
+            document.body.appendChild(messageDiv);
+        }
 
         setTimeout(() => {
-            document.body.removeChild(messageDiv);
-        }, 2000);
+            if (messageDiv.parentNode) messageDiv.parentNode.removeChild(messageDiv);
+        }, 1800);
     }
 }
 
