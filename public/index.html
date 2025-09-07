@@ -14,12 +14,20 @@
     </head>
 <body>
     <div id="app">
+        <!-- 装饰背景（云朵/气泡） -->
+        <div class="bg-decor" aria-hidden="true">
+            <span class="cloud c1"></span>
+            <span class="cloud c2"></span>
+            <span class="cloud c3"></span>
+            <span class="bubble b1"></span>
+            <span class="bubble b2"></span>
+        </div>
         <div class="game-header">
             <h1>🎮 拼音打字王</h1>
             <div class="scoreboard">
-                <div class="stat"><span class="label">得分</span><span id="score" class="value">0</span></div>
-                <div class="stat"><span class="label">准确率</span><span id="accuracy" class="value">100%</span></div>
-                <button id="pause-game" class="pause-btn">暂停</button>
+                <div class="stat"><span class="label">⭐ 得分</span><span id="score" class="value">0</span></div>
+                <div class="stat"><span class="label">🎯 准确率</span><span id="accuracy" class="value">100%</span></div>
+                <button id="pause-game" class="pause-btn">⏸️ 暂停</button>
             </div>
         </div>
 
@@ -77,6 +85,15 @@
                         <button id="back-to-menu" class="control-btn">返回主菜单</button>
                     </div>
                 </div>
+                <!-- 开始覆盖层（键盘关） -->
+                <div id="keyboard-start-overlay" class="level-overlay active" role="dialog" aria-modal="true" aria-label="开始键盘关">
+                    <div class="overlay-card">
+                        <div class="overlay-emoji">⌨️</div>
+                        <div class="overlay-title">键盘熟悉关</div>
+                        <p style="margin:6px 0 14px;color:#666">点击开始，按下屏幕中掉落的字母</p>
+                        <button id="keyboard-start-btn" class="control-btn">开始 ▶️</button>
+                    </div>
+                </div>
             </section>
 
             <!-- 拼音打字关 -->
@@ -97,6 +114,15 @@
                 </div>
             </section>
         </main>
+
+        <!-- 暂停遮罩 -->
+        <div id="pause-overlay" class="pause-overlay" role="dialog" aria-modal="true" aria-label="暂停">
+            <div class="overlay-card">
+                <div class="overlay-emoji">🛌</div>
+                <div class="overlay-title">已暂停</div>
+                <button id="overlay-resume" class="control-btn">继续游戏 ▶️</button>
+            </div>
+        </div>
 
         <footer class="game-footer">
             <p>快乐学习，天天进步！</p>

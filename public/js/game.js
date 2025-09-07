@@ -6,6 +6,7 @@ class TypeGameApp {
         this.accuracy = 100;
         this.totalAttempts = 0;
         this.correctAttempts = 0;
+        this.$overlay = null;
         
         this.initEventListeners();
         this.updateStats();
@@ -35,6 +36,17 @@ class TypeGameApp {
                 this.pauseGame();
             });
         }
+
+        // 暂停遮罩
+        this.$overlay = document.getElementById('pause-overlay');
+        const resumeBtn = document.getElementById('overlay-resume');
+        if (this.$overlay && resumeBtn) {
+            resumeBtn.addEventListener('click', () => this.pauseGame());
+            this.$overlay.addEventListener('click', (e) => {
+                // 点击遮罩空白区域也继续（点击卡片不触发）
+                if (e.target === this.$overlay) this.pauseGame();
+            });
+        }
     }
 
     switchToMode(mode) {
@@ -44,8 +56,9 @@ class TypeGameApp {
         switch (mode) {
             case 'keyboard':
                 this.showScreen('keyboard-game');
-                if (window.keyboardGame) {
-                    window.keyboardGame.start();
+                // 不自动开始，等待用户点击“开始”按钮
+                if (window.keyboardGame && window.keyboardGame.resetToIdle) {
+                    window.keyboardGame.resetToIdle();
                 }
                 break;
             case 'pinyin':
@@ -110,6 +123,11 @@ class TypeGameApp {
             window.keyboardGame.pause();
         } else if (this.currentMode === 'pinyin' && window.pinyinGame) {
             window.pinyinGame.pause();
+        }
+
+        // 切换遮罩显示
+        if (this.$overlay) {
+            this.$overlay.classList.toggle('active');
         }
     }
 

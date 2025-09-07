@@ -20,8 +20,11 @@ class KeyboardGame {
         
         this.currentKeyGroup = 'basic'; // 当前练习的键位组
         this.container = document.getElementById('falling-letters');
+        this.startOverlay = document.getElementById('keyboard-start-overlay');
+        this.startBtn = document.getElementById('keyboard-start-btn');
         
         this.initKeyboard();
+        this.initStartUI();
     }
 
     initKeyboard() {
@@ -52,6 +55,36 @@ class KeyboardGame {
         });
     }
 
+    initStartUI() {
+        if (this.startBtn) {
+            this.startBtn.addEventListener('click', () => this.start());
+        }
+    }
+
+    showStartOverlay() {
+        if (this.startOverlay) this.startOverlay.classList.add('active');
+    }
+
+    hideStartOverlay() {
+        if (this.startOverlay) this.startOverlay.classList.remove('active');
+    }
+
+    resetToIdle() {
+        // 清空状态但不弹“游戏结束”提示
+        this.isPlaying = false;
+        this.isPaused = false;
+        if (this.gameTimer) clearTimeout(this.gameTimer);
+        if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
+        this.fallingLetters.forEach(letter => {
+            if (letter.element && letter.element.parentNode) {
+                letter.element.parentNode.removeChild(letter.element);
+            }
+        });
+        this.fallingLetters = [];
+        if (this.container) this.container.innerHTML = '';
+        this.showStartOverlay();
+    }
+
     start() {
         this.isPlaying = true;
         this.isPaused = false;
@@ -61,6 +94,7 @@ class KeyboardGame {
         
         // 清空容器
         this.container.innerHTML = '';
+        this.hideStartOverlay();
         
         // 开始生成掉落字母
         this.generateLetter();

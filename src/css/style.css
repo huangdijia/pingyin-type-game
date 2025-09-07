@@ -543,3 +543,34 @@ body {
     60% { transform: scale(1.05); opacity: 1; }
     100% { transform: scale(1); }
 }
+
+/* 装饰背景（云朵、气泡） */
+.bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.cloud { position: absolute; width: 180px; height: 70px; background: #fff; opacity: 0.45; border-radius: 50px; filter: blur(1px); }
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; width: 80px; height: 80px; border-radius: 50%; top: -20px; }
+.cloud::before { left: 20px; }
+.cloud::after { left: 60px; top: -30px; width: 100px; height: 100px; }
+.cloud.c1 { top: 10%; left: 5%; animation: float 22s linear infinite; }
+.cloud.c2 { top: 25%; right: 10%; animation: float 28s linear infinite reverse; }
+.cloud.c3 { top: 55%; left: 15%; transform: scale(0.8); animation: float 24s linear infinite; }
+.bubble { position: absolute; width: 16px; height: 16px; background: rgba(255,255,255,0.35); border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.06) inset; animation: rise 12s ease-in-out infinite; }
+.bubble.b1 { bottom: -10%; left: 30%; animation-delay: 2s; }
+.bubble.b2 { bottom: -15%; left: 60%; animation-delay: 5s; }
+@keyframes float { from { transform: translateX(-20vw); } to { transform: translateX(20vw); } }
+@keyframes rise { 0% { transform: translateY(0) scale(1); opacity: .2; } 60% { opacity:.5; } 100% { transform: translateY(-120vh) scale(1.4); opacity: 0; } }
+
+/* 暂停遮罩 */
+.pause-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 999; }
+.pause-overlay.active { display: flex; animation: fadeIn .2s ease; }
+.overlay-card { background: #fff; padding: 28px 24px; border-radius: 20px; border: 3px solid #ffeaa7; box-shadow: var(--shadow-2); text-align: center; }
+.overlay-emoji { font-size: 3rem; margin-bottom: 10px; }
+.overlay-title { font-size: 1.4rem; font-weight: 800; color: var(--c-primary); margin-bottom: 12px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 击中/高亮细节增强 */
+.falling-letter::after { content: ""; position: absolute; width: 60%; height: 60%; top: 10%; left: 10%; border-radius: 50%; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.85), transparent 60%); filter: blur(1px); }
+.key.active::after { content: ""; position: absolute; width: 90%; height: 90%; border-radius: 12px; box-shadow: 0 0 0 6px rgba(123, 223, 242, 0.28); top: 5%; left: 5%; pointer-events: none; }
+
+/* 关卡通用开始遮罩（与暂停样式一致） */
+.level-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 999; }
+.level-overlay.active { display: flex; animation: fadeIn .2s ease; }
