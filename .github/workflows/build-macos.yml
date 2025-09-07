@@ -9,6 +9,15 @@ on:
 jobs:
   build-macos:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        arch: [x64, arm64]
+    env:
+      CSC_IDENTITY_AUTO: 'false'     # 禁用自动签名
+      ELECTRON_CACHE: ${{ runner.temp }}/electron
+      ELECTRON_BUILDER_CACHE: ${{ runner.temp }}/electron-builder
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,26 +28,27 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Cache Electron downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.ELECTRON_CACHE }}
+            ${{ env.ELECTRON_BUILDER_CACHE }}
+          key: ${{ runner.os }}-electron-${{ matrix.arch }}-${{ hashFiles('**/package-lock.json', '**/package.json') }}
+
       - name: Install dependencies
         run: npm install --no-audit --progress=false
 
       - name: Build web assets
         run: npm run build
 
-      # - name: Build macOS DMG (x64)
-      #   env:
-      #     CSC_IDENTITY_AUTO: 'false'   # 禁用自动签名
-      #   run: npm run dist:mac:x64
-
-      - name: Build macOS DMG (arm64)
-        env:
-          CSC_IDENTITY_AUTO: 'false'
-        run: npm run dist:mac:arm64
+      - name: Build macOS DMG (${{ matrix.arch }})
+        run: npx electron-builder --mac dmg --${{ matrix.arch }} --publish never
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: macOS-dmg
+          name: macOS-dmg-${{ matrix.arch }}
           path: |
             dist/*.dmg
           if-no-files-found: error
